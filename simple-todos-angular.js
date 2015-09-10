@@ -1,7 +1,7 @@
 Tasks = new Mongo.Collection('tasks');
 
 if (Meteor.isClient) {
-
+  Session.set('todoLimit', 10);
   Accounts.ui.config({
     passwordSignupFields: "USERNAME_ONLY"
   });
@@ -24,9 +24,13 @@ if (Meteor.isClient) {
       $scope.$meteorSubscribe('tasks');
 
       $scope.tasks = $meteor.collection(function() {
-        return Tasks.find($scope.getReactively('query'), {sort: {createdAt: -1}})
+        return Tasks.find($scope.getReactively('query'), {sort: {createdAt: -1},limit:Session.get('todoLimit')});
       });
 
+      $scope.loadMore = function () {
+       var newLimit = Session.get('todoLimit') + 10;
+       Session.set('todoLimit',newLimit);
+      }
       $scope.addTask = function (newTask) {
         $meteor.call('addTask', newTask);
       };
