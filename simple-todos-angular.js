@@ -23,13 +23,25 @@ if (Meteor.isClient) {
 
       $scope.$meteorSubscribe('tasks');
 
+      // CHANGE 1: BIND the Meteor Session variable to the scope....
+      $meteor.session('todoLimit').bind($scope, 'todoLimit');
+
       $scope.tasks = $meteor.collection(function() {
-        return Tasks.find($scope.getReactively('query'), {sort: {createdAt: -1},limit:Session.get('todoLimit')});
+        
+
+        return Tasks.find($scope.getReactively('query'), 
+                          {
+                            // CONSIDER LETTING ANGULAR HANDLE THE 
+                            // VIEW RE-RENDERING, NOT THE MONGO QUERY
+                            sort: {createdAt: -1},
+                            limit: Session.get('todoLimit')
+                          });
+     
       });
 
       $scope.loadMore = function () {
        var newLimit = Session.get('todoLimit') + 10;
-       Session.set('todoLimit',newLimit);
+       Session.set('todoLimit', newLimit);
       }
       $scope.addTask = function (newTask) {
         $meteor.call('addTask', newTask);

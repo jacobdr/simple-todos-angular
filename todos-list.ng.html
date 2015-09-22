@@ -17,8 +17,9 @@
              name="text" placeholder="Type to add new tasks" />
     </form>
   </header>
-
-  <ul ng-repeat="task in tasks track by task._id">
+  
+  <!-- MAKE SURE THE TRACK BY COMES AT THE END OF THE STATEMENT -->
+  <ul ng-repeat="task in tasks | orderBy: '-createdAt.getTime()':false | limitTo: todoLimit track by task._id">
     <li ng-class="{'checked': task.checked, 'private': task.private}">
       <button class="delete" ng-click="deleteTask(task)">&times;</button>
 
